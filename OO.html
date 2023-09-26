@@ -6,41 +6,115 @@
     <title>Tic-Tac-Toe</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <style>
-        #resetBtn{
-            padding: 1.3em 3em;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            font-weight: 500;
-            color: #000;
-            background-color: #fff;
-            border: none;
-            border-radius: 45px;
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease 0s;
-            cursor: pointer;
-            outline: none;
-        }
-        button:hover {
-            background-color: #23c483;
-            box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
-            color: #fff;
-            transform: translateY(-7px);
+        /* Input Feild*/
+
+        .form__group {
+        position: relative;
+        padding: 20px 0 0;
+        width: 100%;
+        max-width: 180px;
         }
 
-        button:active {
-            transform: translateY(-1px);
+        .form__field {
+        font-family: inherit;
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #9b9b9b;
+        outline: 0;
+        font-size: 17px;
+        color: #090909;
+        padding: 7px 0;
+        background: transparent;
+        transition: border-color 0.2s;
         }
 
+        .form__field::placeholder {
+        color: transparent;
+        }
+
+        .form__field:placeholder-shown ~ .form__label {
+        font-size: 17px;
+        cursor: text;
+        top: 20px;
+        }
+
+        .form__label {
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font-size: 17px;
+        color: #9b9b9b;
+        pointer-events: none;
+        }
+
+        .form__field:focus {
+        padding-bottom: 6px;
+        font-weight: 700;
+        border-width: 3px;
+        border-image: linear-gradient(to right, #116399, #38caef);
+        border-image-slice: 1;
+        }
+
+        .form__field:focus ~ .form__label {
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font-size: 17px;
+        color: #38caef;
+        font-weight: 700;
+        }
+
+        /* reset input */
+        .form__field:required, .form__field:invalid {
+        box-shadow: none;
+        }
+
+        /* Reset Button */
+        #resetBtn {
+        color: rgb(0, 0, 0);
+        text-decoration: none;
+        font-size: 25px;
+        border: none;
+        background: none;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        }
+
+        #resetBtn::before {
+        margin-left: auto;
+        }
+
+        #resetBtn::after, button::before {
+        content: '';
+        width: 5%;
+        height: 4px;
+        background: #ff1100;
+        display: block;
+        transition: 0.3s;
+        }
+
+        #resetBtn:hover::after,  #resetBtn:hover::before {
+        width: 100%;
+        }
+
+        /* Board */
         .cell{
-            width: 75px;
-            height: 75px;
+            width: 150px;
+            height: 150px;
             border: 2px solid;
             box-shadow: 0 0 0 2px;
             line-height: 75px;
-            font-size: 75px;
+            font-size: 100px;
             cursor: pointer;
-        } 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        .cell:hover{
+            background-color: #8052eca1;
+        }
         #boardGame{
             font-family: "Permanent Marker" , cursive;
             text-align: center;
@@ -49,33 +123,90 @@
             display: grid;
             grid-template-columns: repeat(3 , auto);
             margin: auto;
-            width: 225px ;
+            width: fit-content ;
+        }
+
+
+        
+
+        .popup {
+                background: linear-gradient (135deg, #8052ec , #d161ff);
+                height: 100%; 
+                width: 100%;
+                position: absolute;
+                display: flex;
+                z-index: 2;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 1em;
+                font-size: 12vmin;            
+        }
+
+        #new-game{
+            font-size: 0.6em;
+            padding: 0.5em 1em;
+            background-color: #0a0027;
+            color: #ffffff;
+            border-radius: 0.2em;
+            border: none;
+        }
+
+        #message{
+            color: #ffffff;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .popup.hide{
+            display: none; 
         }
     </style>
 </head>
+
 <body>
+    <!-- <div class="form__group field">
+        <input type="input" class="form__field" placeholder="Name" required="" id ="PlayerName">
+        <label for="name" class="form__label">Player 1</label>
+    </div>
+    <div class="form__group field">
+        <input type="input" class="form__field" placeholder="Name Player 2" required="" id="PlayerName2">
+        <label for="name" class="form__label">Player 2</label>
+    </div> -->
+        
     <div id = "boardGame">
         <H1>Tic-Tac-Toe</H1>
-        <div id = "board">
-            <div cellIndex = "0" class="cell"></div>
-            <div cellIndex = "1" class="cell"></div>
-            <div cellIndex = "2" class="cell"></div>
-            <div cellIndex = "3" class="cell"></div>
-            <div cellIndex = "4" class="cell"></div>
-            <div cellIndex = "5" class="cell"></div>
-            <div cellIndex = "6" class="cell"></div>
-            <div cellIndex = "7" class="cell"></div>
-            <div cellIndex = "8" class="cell"></div>
-        </div>
+        <div class="line">
+            <div id = "board">
+                <div cellIndex = "0" class="cell"></div>
+                <div cellIndex = "1" class="cell"></div>
+                <div cellIndex = "2" class="cell"></div>
+                <div cellIndex = "3" class="cell"></div>
+                <div cellIndex = "4" class="cell"></div>
+                <div cellIndex = "5" class="cell"></div>
+                <div cellIndex = "6" class="cell"></div>
+                <div cellIndex = "7" class="cell"></div>
+                <div cellIndex = "8" class="cell"></div>
+            </div>
         <h2 id = "statusText"></h2>
         <button id = "resetBtn"> Reset </button>
+        </div>
+
+    <div class="popup hide">
+        <p id="message"› Sample Message></p>
+        <button id="new-game"›New Game></button>
     </div>
     <script>
-        class TicTacToe {
+    
+    class TicTacToe 
+    {
     constructor() {
         this.cells = document.querySelectorAll(".cell");
         this.statusText = document.querySelector("#statusText");
         this.restartBtn = document.querySelector("#resetBtn");
+        this.newgameBtn = document.getElementById("new-game");
+        this.popupRef = document.querySelector(".popup");
+        this.msgRef = document.getElementById("message");
         this.winConditions = [
             [0, 1, 2],
             [3, 4, 5],
@@ -100,6 +231,40 @@
         this.running = true;
     }
 
+    // startGame()
+    // {
+    //     const playerName1 = document.getElementById("PlayerName1").value;
+    //     const playerName2 = document.getElementById("PlayerName2").value;
+    //     if (playerName1 && playerName2) 
+    //     {
+    //         this.players = [playerName1, playerName2];
+    //         this.currentPlayer = this.players[0];
+    //         this.statusText.textContent = `${this.currentPlayer}'s turn`;
+    //         this.running = true;
+    //     }
+    // }
+
+    disableButtons = () => {
+        popupRef.classList.remove("hide");
+    }
+
+    enableButtons = () => {
+        popupRef.classList.add("hide");
+    }
+
+    winFunction = (letter) => {
+        disableButtons();
+        if(letter == "X")
+        {
+            msgRef.innerHTML = "&#x1F389; <br> 'X' Wins";
+        } 
+        else
+        {
+            msgRef.innerHTML = "&#x1F389; <br> 'O' Wins";
+        }
+    }
+
+
     cellClicked(event) {
         const cellIndex = event.target.getAttribute("cellIndex");
         if (this.options[cellIndex] !== "" || !this.running) {
@@ -119,7 +284,6 @@
         this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
         this.statusText.textContent = `${this.currentPlayer}'s turn`;
     }
-
     checkWinner() {
         let roundWon = false;
 
