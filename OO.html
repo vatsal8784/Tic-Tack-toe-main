@@ -6,74 +6,9 @@
     <title>Tic-Tac-Toe</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <style>
-        /* Input Feild*/
-
-        .form__group {
-        position: relative;
-        padding: 20px 0 0;
-        width: 100%;
-        max-width: 180px;
-        }
-
-        .form__field {
-        font-family: inherit;
-        width: 100%;
-        border: none;
-        border-bottom: 2px solid #9b9b9b;
-        outline: 0;
-        font-size: 17px;
-        color: #090909;
-        padding: 7px 0;
-        background: transparent;
-        transition: border-color 0.2s;
-        }
-
-        .form__field::placeholder {
-        color: transparent;
-        }
-
-        .form__field:placeholder-shown ~ .form__label {
-        font-size: 17px;
-        cursor: text;
-        top: 20px;
-        }
-
-        .form__label {
-        position: absolute;
-        top: 0;
-        display: block;
-        transition: 0.2s;
-        font-size: 17px;
-        color: #9b9b9b;
-        pointer-events: none;
-        }
-
-        .form__field:focus {
-        padding-bottom: 6px;
-        font-weight: 700;
-        border-width: 3px;
-        border-image: linear-gradient(to right, #116399, #38caef);
-        border-image-slice: 1;
-        }
-
-        .form__field:focus ~ .form__label {
-        position: absolute;
-        top: 0;
-        display: block;
-        transition: 0.2s;
-        font-size: 17px;
-        color: #38caef;
-        font-weight: 700;
-        }
-
-        /* reset input */
-        .form__field:required, .form__field:invalid {
-        box-shadow: none;
-        }
-
         /* Reset Button */
         #resetBtn {
-        color: rgb(0, 0, 0);
+        color: rgba(0, 0, 0);
         text-decoration: none;
         font-size: 25px;
         border: none;
@@ -115,7 +50,7 @@
         }
         .cell:hover{
 
-            background-color: #d7cdb6;
+            background-color: rgba(0, 0, 0, 0.300);
         }
         #boardGame{
             font-family: "Permanent Marker" , cursive;
@@ -126,23 +61,6 @@
             grid-template-columns: repeat(3 , auto);
             margin: auto;
             width: fit-content ;
-        }
-
-
-        
-
-        .popup {
-                background: linear-gradient (135deg, #8052ec , #d161ff);
-                height: 100%; 
-                width: 100%;
-                position: absolute;
-                display: flex;
-                z-index: 2;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                gap: 1em;
-                font-size: 12vmin;            
         }
 
         #new-game{
@@ -167,18 +85,8 @@
 </head>
 
 <body>
-    <!-- <div class="form__group field">
-        <input type="input" class="form__field" placeholder="Name" required="" id ="PlayerName">
-        <label for="name" class="form__label">Player 1</label>
-    </div>
-    <div class="form__group field">
-        <input type="input" class="form__field" placeholder="Name Player 2" required="" id="PlayerName2">
-        <label for="name" class="form__label">Player 2</label>
-    </div> -->
-        
     <div id = "boardGame">
         <H1>Tic-Tac-Toe</H1>
-        <div class="line">
             <div id = "board">
                 <div cellIndex = "0" class="cell"></div>
                 <div cellIndex = "1" class="cell"></div>
@@ -192,128 +100,113 @@
             </div>
         <h2 id = "statusText"></h2>
         <button id = "resetBtn"> Reset </button>
-        </div>
-
-    <div class="popup hide">
-        <p id="message"› Sample Message></p>
-        <button id="new-game"›New Game></button>
     </div>
+
     <script>
     
     class TicTacToe 
     {
-    constructor() {
-        this.cells = document.querySelectorAll(".cell");
-        this.statusText = document.querySelector("#statusText");
-        this.restartBtn = document.querySelector("#resetBtn");
-        this.newgameBtn = document.getElementById("new-game");
-        this.popupRef = document.querySelector(".popup");
-        this.msgRef = document.getElementById("message");
-        this.winConditions = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
-        ];
-        this.options = ["", "", "", "", "", "", "", "", ""];
-        this.currentPlayer = "X";
-        this.running = false;
-
-        this.initializeGame();
-    }
-
-    initializeGame() {
-        this.cells.forEach((cell) => cell.addEventListener("click", () => this.cellClicked(event)));
-        this.restartBtn.addEventListener("click", () => this.restartGame());
-        this.statusText.textContent = `${this.currentPlayer}'s turn`;
-        this.running = true;
-    }
-
-    disableButtons = () => {
-        popupRef.classList.remove("hide");
-    }
-
-    enableButtons = () => {
-        popupRef.classList.add("hide");
-    }
-
-    winFunction = (letter) => {
-        disableButtons();
-        if(letter == "X")
+        constructor() 
         {
-            msgRef.innerHTML = "&#x1F389; <br> 'X' Wins";
-        } 
-        else
-        {
-            msgRef.innerHTML = "&#x1F389; <br> 'O' Wins";
-        }
-    }
+            this.cells = document.querySelectorAll(".cell");
+            this.statusText = document.querySelector("#statusText");
+            this.restartBtn = document.querySelector("#resetBtn");
+            this.winConditions = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+            this.options = ["", "", "", "", "", "", "", "", ""];
+            this.currentPlayer = "X";
+            this.running = false;
 
-
-    cellClicked(event) {
-        const cellIndex = event.target.getAttribute("cellIndex");
-        if (this.options[cellIndex] !== "" || !this.running) {
-            return;
+            this.initializeGame();
         }
 
-        this.updateCell(event.target, cellIndex);
-        this.checkWinner();
-    }
+        initializeGame() 
+        {
+            this.cells.forEach((cell) => cell.addEventListener("click", () => this.cellClicked(event)));
+            this.restartBtn.addEventListener("click", () => this.restartGame());
+            this.statusText.textContent = `${this.currentPlayer}'s turn`;
+            this.running = true;
+        }
 
-    updateCell(cell, index) {
-        this.options[index] = this.currentPlayer;
-        cell.textContent = this.currentPlayer;
-    }
-
-    changePlayer() {
-        this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
-        this.statusText.textContent = `${this.currentPlayer}'s turn`;
-    }
-    checkWinner() {
-        let roundWon = false;
-
-        for (let i = 0; i < this.winConditions.length; i++) {
-            const condition = this.winConditions[i];
-            const cellA = this.options[condition[0]];
-            const cellB = this.options[condition[1]];
-            const cellC = this.options[condition[2]];
-
-            if (cellA === "" || cellB === "" || cellC === "") {
-                continue;
+        cellClicked(event) 
+        {
+            const cellIndex = event.target.getAttribute("cellIndex");
+            if (this.options[cellIndex] !== "" || !this.running) {
+                return;
             }
 
-            if (cellA === cellB && cellA === cellC && cellA !== "") {
-                roundWon = true;
-                break;
+            this.updateCell(event.target, cellIndex);
+            this.checkWinner();
+        }
+
+        updateCell(cell, index) 
+        {
+            this.options[index] = this.currentPlayer;
+            cell.textContent = this.currentPlayer;
+        }
+
+        changePlayer() 
+        {
+            this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
+            this.statusText.textContent = `${this.currentPlayer}'s turn`;
+        }
+        checkWinner() 
+        {
+            let roundWon = false;
+
+            for (let i = 0; i < this.winConditions.length; i++) {
+                const condition = this.winConditions[i];
+                const cellA = this.options[condition[0]];
+                const cellB = this.options[condition[1]];
+                const cellC = this.options[condition[2]];
+
+                if (cellA === "" || cellB === "" || cellC === "") {
+                    continue;
+                }
+
+                if (cellA === cellB && cellA === cellC && cellA !== "") {
+                    roundWon = true;
+                    break;
+                }
+            }
+
+            if (roundWon) 
+            {
+                this.statusText.textContent = `${this.currentPlayer} Wins !`;
+                this.running = false;
+            }
+
+            else if (!this.options.includes("")) 
+            {
+                this.statusText.textContent = "Draw !";
+                this.running = false;
+            }
+
+            else 
+            {
+                this.changePlayer();
             }
         }
 
-        if (roundWon) {
-            this.statusText.textContent = `${this.currentPlayer} Wins !`;
-            this.running = false;
-        } else if (!this.options.includes("")) {
-            this.statusText.textContent = "Draw !";
-            this.running = false;
-        } else {
-            this.changePlayer();
+        restartGame() 
+        {
+            this.currentPlayer = "X";
+            this.options = ["", "", "", "", "", "", "", "", ""];
+            this.cells.forEach((cell) => (cell.textContent = ""));
+            this.statusText.textContent = `${this.currentPlayer}'s turn`;
+            this.running = true;
         }
     }
 
-    restartGame() {
-        this.currentPlayer = "X";
-        this.options = ["", "", "", "", "", "", "", "", ""];
-        this.cells.forEach((cell) => (cell.textContent = ""));
-        this.statusText.textContent = `${this.currentPlayer}'s turn`;
-        this.running = true;
-    }
-}
-
-const game = new TicTacToe();
-
+    const game = new TicTacToe();
     </script>
 </body>
 </html>
