@@ -83,90 +83,94 @@
 		</div>
 
 		<script>
-		document.addEventListener("DOMContentLoaded", () => {
-  const startingBoard = [null, null, null, null, null, null, null, null, null];
-  let sign = "X";
-  const message = document.getElementById("statusText");
+            const cells = document.querySelectorAll(".cell");
+            let sign = "X";
+            const message = document.getElementById("statusText");
+          
+            cells.forEach((cell) => 
+            {
+                cell.addEventListener("click", () => handleCellClick(cell));
+            });
+          
+            function handleCellClick(cell) 
+            {
+                if (!cell.textContent) 
+                {
+                    cell.textContent = sign;
+                    cell.classList.add("occupied");
+                    sign = sign === "X" ? "O" : "X";
+                    updateGameStatus();
+                }
+            }
+          
+            function updateGameStatus() 
+            {
+                if (checkWin()) 
+                {
+                    message.textContent = "Winner: " + (sign === "X" ? "O" : "X");
+                    disableCells();
+                } else if (checkDraw()) {
+                    message.textContent = "DRAW";
+                    disableCells();
+                } else {
+                    message.textContent = "Next player: " + sign;
+                }
+            }
+          
+            function checkWin() 
+            {
+                const winConditions = [
+                    [0, 1, 2],
+                    [3, 4, 5],
+                    [6, 7, 8],
+                    [0, 3, 6],
+                    [1, 4, 7],
+                    [2, 5, 8],
+                    [0, 4, 8],
+                    [2, 4, 6],
+                ];
+          
+                for (const condition of winConditions) 
+                {
+                    const [a, b, c] = condition;
+                    if ( cells[a].textContent && cells[a].textContent === cells[b].textContent &&
+                    cells[a].textContent === cells[c].textContent) 
+                    {
+                        return true;
+                    }
+                }
+          
+                return false;
+            }
+          
+            function checkDraw() 
+            {
+                return [...cells].every((cell) => cell.textContent);
+            }
+          
+            function disableCells() 
+            {
+                cells.forEach((cell) => {
+                cell.removeEventListener("click", () => handleCellClick(cell));
+                });
+            }
+          
+            const resetButton = document.getElementById("resetBtn");
+            resetButton.addEventListener("click", reset);
+          
+            function reset() 
+            {
+                cells.forEach((cell) => {
+                    cell.textContent = "";
+                    cell.classList.remove("occupied");
+                });
 
-  const boardContainer = document.getElementById("board");
-  renderBoard([...startingBoard]); // Create a deep copy of the starting board
-
-  function renderBoard(board) {
-    message.textContent = getGameStatus(board);
-
-    boardContainer.innerHTML = "";
-    board.forEach((square, index) => {
-      const squareElement = createSquare(index, square);
-      squareElement.addEventListener("click", () => handleSquareClick(index));
-      boardContainer.appendChild(squareElement);
-    });
-  }
-
-  function createSquare(index, value) {
-    const squareElement = document.createElement("div");
-    squareElement.classList.add("cell");
-    squareElement.textContent = value;
-    squareElement.dataset.cellIndex = index;
-    return squareElement;
-  }
-
-  function handleSquareClick(index) {
-    startingBoard[index] = sign; // Update the startingBoard
-    renderBoard([...startingBoard]); // Create a deep copy of the updated board
-    sign = sign === "X" ? "O" : "X";
-  }
-
-  function getGameStatus(board) {
-    const winner = isWon(board);
-    if (winner) {
-      return "Winner: " + winner;
-    } else if (board.every((square) => square !== null)) {
-      return "DRAW";
-    } else {
-      return "Next player: " + sign;
-    }
-  }
-
-  function isWon(board) {
-    const winConditions = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-    ];
-
-    for (const combination of winConditions) {
-      const [a, b, c] = combination;
-      const posA = board[a];
-      const posB = board[b];
-      const posC = board[c];
-
-      if (areMatching(posA, posB, posC)) {
-        return posA;
-      }
-    }
-    return null;
-  }
-
-  function areMatching(a, b, c) {
-    return a === b && b === c;
-  }
-
-  const resetButton = document.getElementById("resetBtn");
-  resetButton.addEventListener("click", reset);
-
-  function reset() {
-    startingBoard.fill(null);
-    sign = "X";
-    renderBoard([...startingBoard]); // Create a deep copy of the starting board
-  }
-});
-
-
-		</script>
+                message.textContent = "Next player: X";
+                sign = "X";
+                cells.forEach((cell) => {
+                    cell.addEventListener("click", () => handleCellClick(cell));
+                });
+            }
+          </script>
 	</body>
 </html>
