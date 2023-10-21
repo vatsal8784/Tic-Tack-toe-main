@@ -83,86 +83,97 @@
 		</div>
 
 		<script>
-			const startingBoard = [null, null, null, null, null, null, null, null, null];
-			let sign = "X";
-			const message = document.getElementById("statusText");
+			document.addEventListener("DOMContentLoaded", () => {
+  const startingBoard = [null, null, null, null, null, null, null, null, null];
+  let sign = "X";
+  const message = document.getElementById("statusText");
 
-			render(startingBoard); //render the inital empty board
+  const boardContainer = document.getElementById("board");
+  renderBoard(startingBoard);
 
-			function render(board) {
-			let boardElement = document.createElement("div");
-			boardElement.id = "container";
-			const winner = isWon(board);
+  function renderBoard(board) {
+    message.textContent = getGameStatus(board);
 
-			const rootDiv = document.getElementById("root");
+    boardContainer.innerHTML = "";
+    board.forEach((square, index) => {
+      const squareElement = createSquare(index, square);
+      squareElement.addEventListener("click", () => handleSquareClick(index));
+      boardContainer.appendChild(squareElement);
+    });
+  }
 
-			if (winner) {
-				message.innerHTML = "Winner: " + winner;
-			} else if (board.every((square) => square !== null)) {
-				message.innerHTML = "DRAW";
-			} else {
-				message.innerHTML = "Next player: " + sign;
-			}
+  function createSquare(index, value) {
+    const squareElement = document.createElement("div");
+    squareElement.classList.add("cell");
+    squareElement.textContent = value;
+    squareElement.dataset.cellIndex = index;
+    return squareElement;
+  }
 
-			board.forEach((square, index) => {
-				const squareElement = document.createElement("div");
-				squareElement.classList.add("p");
-				squareElement.id = `p${index}`;
-				squareElement.textContent = square;
-				squareElement.addEventListener("click", () => {
-				const newBoard = play(index, board);
-				render(newBoard);
-				});
-				boardElement.append(squareElement);
-			});
+  function handleSquareClick(index) {
+    const newBoard = play(index, startingBoard);
+    renderBoard(newBoard);
+  }
 
-			rootDiv.replaceChildren(boardElement);
-			}
+  function getGameStatus(board) {
+    const winner = isWon(board);
+    if (winner) {
+      return "Winner: " + winner;
+    } else if (board.every((square) => square !== null)) {
+      return "DRAW";
+    } else {
+      return "Next player: " + sign;
+    }
+  }
 
-			function isWon(board) {
-			const winConditions = [
-				[0, 1, 2],
-				[3, 4, 5],
-				[6, 7, 8],
-				[0, 4, 8],
-				[2, 4, 6],
-				[0, 3, 6],
-				[1, 4, 7],
-				[2, 5, 8],
-			];
+  function isWon(board) {
+    const winConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+    ];
 
-			for (const combination of winConditions) {
-				const [a, b, c] = combination;
-				const posA = board[a];
-				const posB = board[b];
-				const posC = board[c];
+    for (const combination of winConditions) {
+      const [a, b, c] = combination;
+      const posA = board[a];
+      const posB = board[b];
+      const posC = board[c];
 
-				if (areMatching(posA, posB, posC)) {
-				return posA;
-				}
-			}
-			return null;
-			}
+      if (areMatching(posA, posB, posC)) {
+        return posA;
+      }
+    }
+    return null;
+  }
 
-			function play(index, board) {
-			if (board[index] != null || isWon(board)) return board;
+  function play(index, board) {
+    if (board[index] != null || isWon(board)) return board;
 
-			const newBoardState = board.slice(); //.slice() with no arguments returns a shallow copy of the array, a .copy() in java
+    const newBoardState = [...board];
+    newBoardState[index] = sign;
+    sign = sign === "X" ? "O" : "X";
+    return newBoardState;
+  }
 
-			newBoardState[index] = sign;
-			sign = sign === "X" ? "O" : "X";
-			return newBoardState;
-			}
+  function reset() {
+    startingBoard.fill(null);
+    sign = "X";
+    renderBoard(startingBoard);
+  }
 
-			function reset() {
-			render(startingBoard);
-			sign = "X";
-			message.innerHTML = "Next player: " + sign;
-			}
+  function areMatching(a, b, c) {
+    return a === b && b === c;
+  }
 
-			function areMatching(a, b, c) {
-			return a === b && b === c;
-			}
+  const resetButton = document.getElementById("resetBtn");
+  resetButton.addEventListener("click", reset);
+});
+
 		</script>
 	</body>
 </html>
