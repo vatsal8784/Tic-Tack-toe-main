@@ -83,13 +83,13 @@
 		</div>
 
 		<script>
-			document.addEventListener("DOMContentLoaded", () => {
+		document.addEventListener("DOMContentLoaded", () => {
   const startingBoard = [null, null, null, null, null, null, null, null, null];
   let sign = "X";
   const message = document.getElementById("statusText");
 
   const boardContainer = document.getElementById("board");
-  renderBoard(startingBoard);
+  renderBoard([...startingBoard]); // Create a deep copy of the starting board
 
   function renderBoard(board) {
     message.textContent = getGameStatus(board);
@@ -111,8 +111,9 @@
   }
 
   function handleSquareClick(index) {
-    const newBoard = play(index, startingBoard);
-    renderBoard(newBoard);
+    startingBoard[index] = sign; // Update the startingBoard
+    renderBoard([...startingBoard]); // Create a deep copy of the updated board
+    sign = sign === "X" ? "O" : "X";
   }
 
   function getGameStatus(board) {
@@ -151,28 +152,20 @@
     return null;
   }
 
-  function play(index, board) {
-    if (board[index] != null || isWon(board)) return board;
-
-    const newBoardState = [...board];
-    newBoardState[index] = sign;
-    sign = sign === "X" ? "O" : "X";
-    return newBoardState;
-  }
-
-  function reset() {
-    startingBoard.fill(null);
-    sign = "X";
-    renderBoard(startingBoard);
-  }
-
   function areMatching(a, b, c) {
     return a === b && b === c;
   }
 
   const resetButton = document.getElementById("resetBtn");
   resetButton.addEventListener("click", reset);
+
+  function reset() {
+    startingBoard.fill(null);
+    sign = "X";
+    renderBoard([...startingBoard]); // Create a deep copy of the starting board
+  }
 });
+
 
 		</script>
 	</body>
